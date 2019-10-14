@@ -75,4 +75,49 @@ describe("Tuple", () => {
       }
     );
   });
+
+  describe("negate", () => {
+    test.each`
+      tuple                           | result
+      ${new Tuple(0, 0, 0, 0)}        | ${new Tuple(0, 0, 0, 0)}
+      ${new Tuple(1, 1, 1, 1)}        | ${new Tuple(-1, -1, -1, -1)}
+      ${new Tuple(-1, -1, -1, -1)}    | ${new Tuple(1, 1, 1, 1)}
+      ${new Tuple(1.1, 1.2, 1.33, 0)} | ${new Tuple(-1.1, -1.2, -1.33, 0)}
+    `("-($tuple) should equal $result", ({ tuple, result }) => {
+      expect(tuple.negate()).toEqual(expect.objectContaining(result));
+    });
+  });
+
+  describe("multiply", () => {
+    test.each`
+      tuple                    | multiplier | result
+      ${new Tuple(0, 0, 0, 0)} | ${0}       | ${new Tuple(0, 0, 0, 0)}
+      ${new Tuple(1, 1, 1, 1)} | ${-1}      | ${new Tuple(-1, -1, -1, -1)}
+      ${new Tuple(1, 1, 1, 1)} | ${4}       | ${new Tuple(4, 4, 4, 4)}
+      ${new Tuple(1, 1, 1, 1)} | ${4.54}    | ${new Tuple(4.54, 4.54, 4.54, 4.54)}
+      ${new Tuple(1, 1, 1, 1)} | ${0.4}     | ${new Tuple(0.4, 0.4, 0.4, 0.4)}
+    `(
+      "multiplying a tuple: $tuple by $multiplier should equal $result",
+      ({ tuple, multiplier, result }) => {
+        expect(tuple.multiply(multiplier)).toEqual(
+          expect.objectContaining(result)
+        );
+      }
+    );
+  });
+
+  describe("divide", () => {
+    test.each`
+      tuple                    | divisor | result
+      ${new Tuple(0, 0, 0, 0)} | ${0}    | ${new Tuple(0, 0, 0, 0)}
+      ${new Tuple(1, 1, 1, 1)} | ${-1}   | ${new Tuple(-1, -1, -1, -1)}
+      ${new Tuple(1, 1, 1, 1)} | ${4}    | ${new Tuple(0.25, 0.25, 0.25, 0.25)}
+      ${new Tuple(1, 1, 1, 1)} | ${0.4}  | ${new Tuple(2.5, 2.5, 2.5, 2.5)}
+    `(
+      "dividing tuple: $tuple by $divisor should equal $result",
+      ({ tuple, divisor, result }) => {
+        expect(tuple.divide(divisor)).toEqual(expect.objectContaining(result));
+      }
+    );
+  });
 });

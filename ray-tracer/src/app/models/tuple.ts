@@ -31,6 +31,36 @@ export class Tuple {
     );
   }
 
+  negate(): Tuple {
+    const negate = (a: number) => (a === 0 ? 0 : -a);
+    return new Tuple(
+      negate(this.x),
+      negate(this.y),
+      negate(this.z),
+      negate(this.w)
+    );
+  }
+
+  multiply(multiplier: number): Tuple {
+    const multiply = (x: number) => x * multiplier;
+    return new Tuple(
+      multiply(this.x),
+      multiply(this.y),
+      multiply(this.z),
+      multiply(this.w)
+    );
+  }
+
+  divide(divisor: number): Tuple {
+    const divide = (x: number) => (x === 0 ? 0 : x / divisor);
+    return new Tuple(
+      divide(this.x),
+      divide(this.y),
+      divide(this.z),
+      divide(this.w)
+    );
+  }
+
   isEqual(tuple: Tuple) {
     const compare = (a: number, b: number): boolean =>
       Math.abs(a - b) < this.EPSILON;
