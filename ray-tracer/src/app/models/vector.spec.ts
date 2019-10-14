@@ -5,8 +5,8 @@ describe("Vector", () => {
     expect(new Vector()).toBeDefined();
   });
 
-  it("should create a Tuple that is a vector w = 1", () => {
-    expect(new Vector().isVector).toEqual(true);
-    expect(new Vector().isPoint).toEqual(false);
+  it("should create a Tuple that is a vector w = 0", () => {
+    expect(new Vector().isVector).toEqual(false);
+    expect(new Vector().isPoint).toEqual(true);
   });
 });
