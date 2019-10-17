@@ -8,7 +8,11 @@ export class Canvas {
   }
 
   writePixel(x: number, y: number, color: Color) {
-    this.canvas[x][y] = new Pixel(x, y, color);
+    console.log("x: ", x);
+    console.log("y: ", y);
+    if (x < this.width && y < this.height) {
+      this.canvas[x - 1][y - 1] = new Pixel(x, y, color);
+    }
   }
 
   pixelAt(x: number, y: number) {
@@ -16,15 +20,32 @@ export class Canvas {
   }
 
   canvasToPPM(): string {
-    const header = [
-      '"""',
-      "P3",
-      `${this.height} ${this.width}`,
-      "255",
-      '"""'
-    ].join("\n");
+    const header = ["P3", `${this.height} ${this.width}`, "255"].join("\n");
+    const pixels = this.canvas
+      .map((row: Pixel[]) =>
+        row
+          .map((pixel: Pixel) => {
+            const red = this.normalizePixelRange(pixel.color.red);
+            const green = this.normalizePixelRange(pixel.color.green);
+            const blue = this.normalizePixelRange(pixel.color.blue);
+            return [red, green, blue].join(" ");
+          })
+          .join(" ")
+      )
+      .join("\n");
+    return [header, pixels].join("\n");
+  }
 
-    return header;
+  private normalizePixelRange(color: number): string {
+    if (color < 0) {
+      return "0";
+    }
+
+    if (color > 1) {
+      return "255";
+    }
+
+    return `${color * 255}`;
   }
 
   private createCanvas(rows: number, columns: number): Pixel[][] {

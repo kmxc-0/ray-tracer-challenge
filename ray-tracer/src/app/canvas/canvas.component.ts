@@ -7,24 +7,26 @@ import {
 } from "@angular/core";
 import { Canvas } from "../models/canvas/canvas";
 import { interval, Subject } from "rxjs";
-import { take, takeUntil } from "rxjs/operators";
+import { take, takeUntil, tap } from "rxjs/operators";
 import { Vector } from "../models/tuples/vector";
 import { Environment } from "../models/projectile/environment";
 import { Projectile } from "../models/projectile/projectile";
 import { Tuple } from "../models/tuples/tuple";
 import { Point } from "../models/tuples/point";
+import { Color } from "../models/tuples/color";
 
 @Component({
   selector: "grid",
-  template: "<canvas #canvas></canvas>",
+  template: "<canvas #canvas></canvas><pre>{{ppm}}</pre>",
   styles: ["canvas { border: 1px solid #000; }"]
 })
 export class CanvasComponent implements AfterViewInit {
   @ViewChild("canvas", { static: false }) public canvasEl: ElementRef;
 
-  @Input() public width = 800;
-  @Input() public height = 400;
+  @Input() public width = 50;
+  @Input() public height = 50;
 
+  ppm: string;
   private context: CanvasRenderingContext2D;
   private canvas: Canvas;
 
@@ -65,9 +67,13 @@ export class CanvasComponent implements AfterViewInit {
 
   private draw() {
     const unsubscribe$ = new Subject<void>();
+
+    unsubscribe$.subscribe(() => {
+      this.ppm = this.canvas.canvasToPPM();
+    });
     let projectile = new Projectile(
-      new Point(0, 350, 0),
-      new Vector(100, 10, 0).normalize()
+      new Point(0, 10, 0),
+      new Vector(5, 0.5, 0).normalize()
     );
 
     const environment = new Environment(
@@ -76,13 +82,10 @@ export class CanvasComponent implements AfterViewInit {
     );
 
     interval(10)
-      .pipe(
-        take(1000),
-        takeUntil(unsubscribe$)
-      )
+      .pipe(takeUntil(unsubscribe$))
       .subscribe(_ => {
-        console.log("x :" + projectile.position.x);
-        console.log("y :" + projectile.position.y);
+        // console.log("x :" + projectile.position.x);
+        // console.log("y :" + projectile.position.y);
         this.context.beginPath();
         this.context.moveTo(projectile.position.x, projectile.position.y);
         projectile = this.tick(environment, projectile);
@@ -90,6 +93,11 @@ export class CanvasComponent implements AfterViewInit {
           unsubscribe$.next();
         }
         this.context.lineTo(projectile.position.x, projectile.position.y);
+        this.canvas.writePixel(
+          Math.round(projectile.position.x),
+          Math.round(projectile.position.y),
+          new Color(1, 1, 1)
+        );
         this.context.stroke();
       });
   }
