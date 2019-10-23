@@ -1,0 +1,14 @@
+<div class="container" [style.width.px]="width" [style.height.px]="height">
+  <ng-container *ngFor="let column of grid; let i = index">
+    <ng-container *ngFor="let pix of column; let j = index">
+      <app-pixel
+        class="square"
+        [style.bottom.px]="j * 5"
+        [style.left.px]="i * 5"
+        [color]="pix.color.rgb"
+        [x]="pix.x"
+        [y]="pix.y"
+      ></app-pixel>
+    </ng-container>
+  </ng-container>
+</div>
