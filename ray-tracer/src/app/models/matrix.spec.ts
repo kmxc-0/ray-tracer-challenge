@@ -37,4 +37,35 @@ describe("Matrix", () => {
     expect(m.at(1, 1)).toEqual(-2);
     expect(m.at(2, 2)).toEqual(1);
   });
+
+  describe("isEqual", () => {
+    it("should return that the same matrix is equal to itself", () => {
+      const matrix = new Matrix(
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 2]
+      );
+
+      expect(Matrix.isEqual(matrix, matrix)).toBe(true);
+    });
+
+    it("should return that two different matrices are not equal", () => {
+      const matrix = new Matrix(
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 2]
+      );
+
+      const otherMatrix = new Matrix(
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 8, 7, 6],
+        [5, 4, 3, 3]
+      );
+
+      expect(Matrix.isEqual(matrix, otherMatrix)).toBe(false);
+    });
+  });
 });

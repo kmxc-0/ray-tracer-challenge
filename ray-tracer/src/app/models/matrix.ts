@@ -1,5 +1,17 @@
 export class Matrix {
-  public m: number[][];
+  public m: number[][] = [];
+
+  static isEqual = (matrixA: Matrix, matrixB: Matrix) => {
+    const rowEqual = (aRow: number[], bRow: number[]) =>
+      aRow.every((a, index) => {
+        return a === bRow[index];
+      });
+
+    return matrixA.m.every((row: number[], index) =>
+      rowEqual(row, matrixB.m[index])
+    );
+  };
+
   constructor(...rows: number[][]) {
     this.m = rows;
   }
