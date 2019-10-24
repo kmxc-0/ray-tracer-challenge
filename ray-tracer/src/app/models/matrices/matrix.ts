@@ -1,4 +1,4 @@
-import { Tuple } from "./tuples/tuple";
+import { Tuple } from "../tuples/tuple";
 
 export class Matrix {
   public m: number[][] = [];
@@ -31,18 +31,27 @@ export class Matrix {
       return this.mTuple(b);
     }
 
-    const bCols: number[][] = this.transpose(b.m);
-    return this.m.map((aRow: number[]) =>
-      bCols.map(bCol => this.dot(aRow, bCol))
+    const bCols: Matrix = this.transpose(b);
+    const m: number[][] = this.m.map((aRow: number[]) =>
+      bCols.m.map(bCol => this.dot(aRow, bCol))
     );
+
+    return new Matrix(...m);
+  }
+
+  transpose(matrix: Matrix = this) {
+    const transposedM = matrix.m[0].map((_, iCol) =>
+      matrix.m.map(row => row[iCol])
+    );
+    return new Matrix(...transposedM);
   }
 
   private mTuple(t: Tuple): Tuple {
-    const asRow: number[][] = [[t.x, t.y, t.z, t.w]];
-    const bCols: number[][] = this.transpose(asRow);
+    const asRow: Matrix = new Matrix([t.x, t.y, t.z, t.w]);
+    const bCols: Matrix = this.transpose(asRow);
 
     const tColumn = this.m.map((row: number[]) =>
-      this.sum(row.map((x: number, i) => x * bCols[i][0]))
+      this.sum(row.map((x: number, i) => x * bCols.m[i][0]))
     );
 
     return new Tuple(tColumn[0], tColumn[1], tColumn[2], tColumn[3]);
@@ -58,10 +67,6 @@ export class Matrix {
     ys: number[]
   ) {
     return xs.length === ys.length ? xs.map((x, i) => f(x, ys[i])) : undefined;
-  }
-
-  private transpose(xs: number[][]) {
-    return xs[0].map((_, iCol) => xs.map(row => row[iCol]));
   }
 
   private sum(xs: number[]) {
