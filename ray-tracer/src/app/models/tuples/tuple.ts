@@ -3,7 +3,7 @@ export class Tuple {
   isVector: boolean;
   private readonly EPSILON = 0.00001;
 
-  constructor(public x = 0, public y = 0, public z = 0, private w = 0) {
+  constructor(public x = 0, public y = 0, public z = 0, public w = 0) {
     this.x = !isNaN(x) && typeof x === "number" ? x : 0;
     this.y = !isNaN(y) && typeof y === "number" ? y : 0;
     this.z = !isNaN(z) && typeof z === "number" ? z : 0;
