@@ -46,6 +46,31 @@ export class Matrix {
     return new Matrix(...transposedM);
   }
 
+  determinant() {
+    const a = this.at(0, 0);
+    const d = this.at(1, 1);
+    const b = this.at(0, 1);
+    const c = this.at(1, 0);
+    return a * d - b * c;
+  }
+
+  subMatrix(row: number, col: number) {
+    this.m.splice(row, 1);
+    this.m.map((items: number[]) => items.splice(col, 1));
+    return new Matrix(...this.m);
+  }
+
+  minor(i, j) {
+    return this.subMatrix(i, j).determinant();
+  }
+
+  cofactor(i, j) {
+    const minor = this.minor(i, j);
+    const even = i + (j % 2) === 0;
+
+    return even ? minor : minor * -1;
+  }
+
   private mTuple(t: Tuple): Tuple {
     const asRow: Matrix = new Matrix([t.x, t.y, t.z, t.w]);
     const bCols: Matrix = this.transpose(asRow);

@@ -147,4 +147,49 @@ describe("Matrix", () => {
       );
     });
   });
+
+  describe("determinant of a 2x2 matrix", () => {
+    it("should calculate the determinant of a 2x2 matrix", () => {
+      const matrix = new Matrix([1, 5], [-3, 2]);
+
+      expect(matrix.determinant()).toEqual(17);
+    });
+  });
+
+  describe("submatrices", () => {
+    it("should find the 2x2 submatrix of a 3x3 matrix", () => {
+      const matrix = new Matrix([1, 5, 0], [-3, 2, 7], [0, 6, -3]);
+
+      expect(matrix.subMatrix(0, 2)).toEqual(new Matrix([-3, 2], [0, 6]));
+    });
+
+    it("should find the 3x3 submatrix of a 4x4 matrix", () => {
+      const matrix = new Matrix(
+        [-6, 1, 1, 6],
+        [-8, 5, 8, 6],
+        [-1, 0, 8, 2],
+        [-7, 1, -1, 1]
+      );
+
+      expect(matrix.subMatrix(2, 1)).toEqual(
+        new Matrix([-6, 1, 6], [-8, 8, 6], [-7, -1, 1])
+      );
+    });
+
+    describe("minor", () => {
+      it("should find the minor of row i and column j of a 3x3 matrix", () => {
+        const matrix = new Matrix([3, 5, 0], [2, -1, 7], [6, -1, 5]);
+
+        expect(matrix.minor(1, 0)).toEqual(25);
+      });
+    });
+
+    describe("cofactor", () => {
+      it("should find the cofactor of a 3x3 matrix", () => {
+        const matrix = new Matrix([3, 5, 0], [2, -1, -7], [6, -1, 5]);
+        expect(matrix.cofactor(0, 0)).toEqual(-12);
+        expect(matrix.cofactor(1, 0)).toEqual(-25);
+      });
+    });
+  });
 });
