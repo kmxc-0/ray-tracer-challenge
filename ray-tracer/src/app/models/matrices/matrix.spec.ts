@@ -148,11 +148,35 @@ describe("Matrix", () => {
     });
   });
 
-  describe("determinant of a 2x2 matrix", () => {
+  describe("determinant of a matrix", () => {
     it("should calculate the determinant of a 2x2 matrix", () => {
       const matrix = new Matrix([1, 5], [-3, 2]);
 
       expect(matrix.determinant()).toEqual(17);
+    });
+
+    it("should calculate the determinant of a 3x3 matrix", () => {
+      const matrix = new Matrix([1, 2, 6], [-5, 8, -4], [2, 6, 4]);
+
+      expect(matrix.cofactor(0, 0)).toEqual(56);
+      expect(matrix.cofactor(0, 1)).toEqual(12);
+      expect(matrix.cofactor(0, 2)).toEqual(-46);
+      expect(matrix.determinant()).toEqual(-196);
+    });
+
+    it("should calculate the determinant of a 4x4 matrix", () => {
+      const matrix = new Matrix(
+        [-2, -8, 3, 5],
+        [-3, 1, 7, 3],
+        [1, 2, -9, 6],
+        [-6, 7, 7, -9]
+      );
+
+      expect(matrix.cofactor(0, 0)).toEqual(690);
+      expect(matrix.cofactor(0, 1)).toEqual(447);
+      expect(matrix.cofactor(0, 2)).toEqual(210);
+      expect(matrix.cofactor(0, 3)).toEqual(51);
+      expect(matrix.determinant()).toEqual(-4071);
     });
   });
 
@@ -189,6 +213,87 @@ describe("Matrix", () => {
         const matrix = new Matrix([3, 5, 0], [2, -1, -7], [6, -1, 5]);
         expect(matrix.cofactor(0, 0)).toEqual(-12);
         expect(matrix.cofactor(1, 0)).toEqual(-25);
+      });
+    });
+
+    describe("matrix inversion", () => {
+      it("should return that a matrix is invertable (determinant != 0)", () => {
+        const matrix = new Matrix(
+          [6, 4, 4, 4],
+          [5, 5, 7, 6],
+          [4, -9, 3, -7],
+          [9, 1, 7, -6]
+        );
+
+        expect(matrix.isInvertable).toBe(true);
+      });
+
+      it("should return that a matrix is invertable (determinant != 0)", () => {
+        const matrix = new Matrix(
+          [-4, 2, -2, -3],
+          [9, 6, 2, 6],
+          [0, -5, 1, -5],
+          [0, 0, 0, 0]
+        );
+
+        expect(matrix.isInvertable).toBe(false);
+      });
+
+      it("should find the inverse of a 4x4 matrix", () => {
+        const matrix = new Matrix(
+          [-5, 2, 6, -8],
+          [1, -5, 1, 8],
+          [7, 7, -6, -7],
+          [1, -3, 7, 4]
+        );
+
+        expect(matrix.determinant()).toEqual(532);
+        expect(matrix.cofactor(2, 3)).toEqual(-160);
+        expect(matrix.cofactor(3, 2)).toEqual(105);
+        expect(matrix.invert()).toEqual(
+          new Matrix(
+            [0.21805, 0.45113, 0.2406, -0.04511],
+            [-0.80827, -1.45677, -0.44361, 0.52068],
+            [-0.07895, -0.22368, -0.05263, 0.19737],
+            [-0.52256, -0.81391, -0.30075, 0.30639]
+          )
+        );
+      });
+
+      it("should find the inverse of a 4x4 matrix - 2nd case", () => {
+        const matrix = new Matrix(
+          [8, -5, 9, 2],
+          [7, 5, 6, 1],
+          [-6, 0, 9, 6],
+          [-3, 0, -9, -4]
+        );
+
+        expect(matrix.invert()).toEqual(
+          new Matrix(
+            [-0.15385, -0.15385, -0.28205, -0.53846],
+            [-0.07692, 0.12308, 0.02564, 0.03077],
+            [0.35897, 0.35897, 0.4359, 0.92308],
+            [-0.69231, -0.69231, -0.76923, -1.92308]
+          )
+        );
+      });
+
+      it("should find the inverse of a 4x4 matrix - 3rd case", () => {
+        const matrix = new Matrix(
+          [9, 3, 0, 9],
+          [-5, -2, -6, -3],
+          [-4, 9, 6, 4],
+          [-7, 6, 6, 2]
+        );
+
+        expect(matrix.invert()).toEqual(
+          new Matrix(
+            [-0.04074, -0.07778, 0.14444, -0.22222],
+            [-0.07778, 0.03333, 0.36667, -0.33333],
+            [-0.02901, -0.1463, -0.10926, 0.12963],
+            [0.17778, 0.06667, -0.26667, 0.33333]
+          )
+        );
       });
     });
   });

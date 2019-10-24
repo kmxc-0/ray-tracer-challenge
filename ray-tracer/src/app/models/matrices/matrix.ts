@@ -2,6 +2,8 @@ import { Tuple } from "../tuples/tuple";
 
 export class Matrix {
   public m: number[][] = [];
+  public size: number;
+  public isInvertable: boolean;
 
   static isEqual = (matrixA: Matrix, matrixB: Matrix) => {
     const rowEqual = (aRow: number[], bRow: number[]) =>
@@ -16,9 +18,11 @@ export class Matrix {
 
   constructor(...rows: number[][]) {
     this.m = rows;
+    this.size = rows.length;
+    this.isInvertable = this.determinant() !== 0;
   }
 
-  at(row: number, col: number) {
+  at(row: number, col: number): number {
     try {
       return this.m[row][col];
     } catch (error) {
@@ -47,28 +51,60 @@ export class Matrix {
   }
 
   determinant() {
-    const a = this.at(0, 0);
-    const d = this.at(1, 1);
-    const b = this.at(0, 1);
-    const c = this.at(1, 0);
-    return a * d - b * c;
+    let det = 0;
+
+    if (this.size === 2) {
+      const a = this.at(0, 0);
+      const d = this.at(1, 1);
+      const b = this.at(0, 1);
+      const c = this.at(1, 0);
+      return a * d - b * c;
+    } else {
+      for (let i = 0; i < this.size; i++) {
+        det += this.at(0, i) * this.cofactor(0, i);
+      }
+    }
+    return det;
   }
 
   subMatrix(row: number, col: number) {
-    this.m.splice(row, 1);
-    this.m.map((items: number[]) => items.splice(col, 1));
-    return new Matrix(...this.m);
+    const copy: number[][] = [...this.m].map((items: number[]) => [...items]);
+    copy.splice(row, 1);
+    copy.map((items: number[]) => items.splice(col, 1));
+
+    return new Matrix(...copy);
   }
 
-  minor(i, j) {
+  minor(i: number, j: number) {
     return this.subMatrix(i, j).determinant();
   }
 
-  cofactor(i, j) {
+  cofactor(i: number, j: number) {
     const minor = this.minor(i, j);
-    const even = i + (j % 2) === 0;
+    const even = (i + j) % 2 === 0;
 
     return even ? minor : minor * -1;
+  }
+
+  invert(): Matrix {
+    if (!this.isInvertable) {
+      throw new Error("This isn't an invertable matrix!");
+    }
+
+    const m2 = new Matrix(...this.copy());
+
+    for (let i = this.size; i-- > 0; ) {
+      for (let j = this.size; j-- > 0; ) {
+        const c = this.cofactor(i, j);
+        m2.m[j][i] = +(c / this.determinant()).toFixed(5);
+      }
+    }
+
+    return m2;
+  }
+
+  private copy() {
+    return [...this.m].map((items: number[]) => [...items]);
   }
 
   private mTuple(t: Tuple): Tuple {
