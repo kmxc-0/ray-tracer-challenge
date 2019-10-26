@@ -2,6 +2,7 @@ import { Ray } from "./ray";
 import { Point } from "../tuples/point";
 import { Vector } from "../tuples/vector";
 import { Sphere } from "../sphere";
+import { Intersections } from "./intersection";
 
 describe("Ray", () => {
   it("should create a new Ray", () => {
@@ -36,44 +37,57 @@ describe("Ray", () => {
     it("should return points of intersection at two points", () => {
       const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
 
-      const pointsOfIntersection: number[] = ray.intersect(new Sphere());
-      expect(pointsOfIntersection.length).toEqual(2);
-      expect(pointsOfIntersection[0]).toEqual(4.0);
-      expect(pointsOfIntersection[1]).toEqual(6.0);
+      const pointsOfIntersection: Intersections = ray.intersect(new Sphere());
+      expect(pointsOfIntersection.intersections.length).toEqual(2);
+      expect(pointsOfIntersection.intersections[0].t).toEqual(4.0);
+      expect(pointsOfIntersection.intersections[1].t).toEqual(6.0);
+    });
+
+    it("should set the object of the intersection", () => {
+      const ray = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+
+      const pointsOfIntersection: Intersections = ray.intersect(new Sphere());
+      expect(pointsOfIntersection.intersections.length).toEqual(2);
+      expect(pointsOfIntersection.intersections[0].object).toEqual(
+        new Sphere()
+      );
+      expect(pointsOfIntersection.intersections[1].object).toEqual(
+        new Sphere()
+      );
     });
 
     it("should return a single point of contact when intersecting a sphere at a tangent", () => {
       const ray = new Ray(new Point(0, 1, -5), new Vector(0, 0, 1));
 
-      const pointsOfIntersection: number[] = ray.intersect(new Sphere());
-      expect(pointsOfIntersection.length).toEqual(2);
-      expect(pointsOfIntersection[0]).toEqual(5.0);
-      expect(pointsOfIntersection[1]).toEqual(5.0);
+      const pointsOfIntersection: Intersections = ray.intersect(new Sphere());
+      expect(pointsOfIntersection.intersections.length).toEqual(2);
+      expect(pointsOfIntersection.intersections[0].t).toEqual(5.0);
+      expect(pointsOfIntersection.intersections[1].t).toEqual(5.0);
     });
 
     it("should return no intersections when a ray misses a sphere", () => {
       const ray = new Ray(new Point(0, 2, -5), new Vector(0, 0, 1));
 
-      const pointsOfIntersection: number[] = ray.intersect(new Sphere());
-      expect(pointsOfIntersection.length).toEqual(0);
+      const pointsOfIntersection: Intersections = ray.intersect(new Sphere());
+      expect(pointsOfIntersection.intersections.length).toEqual(0);
     });
 
     it("should return intersections for a ray originating within a sphere", () => {
       const ray = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
 
-      const pointsOfIntersection: number[] = ray.intersect(new Sphere());
-      expect(pointsOfIntersection.length).toEqual(2);
-      expect(pointsOfIntersection[0]).toEqual(-1.0);
-      expect(pointsOfIntersection[1]).toEqual(1.0);
+      const pointsOfIntersection: Intersections = ray.intersect(new Sphere());
+      expect(pointsOfIntersection.intersections.length).toEqual(2);
+      expect(pointsOfIntersection.intersections[0].t).toEqual(-1.0);
+      expect(pointsOfIntersection.intersections[1].t).toEqual(1.0);
     });
 
     it("should return intersections for a ray originating behind a sphere", () => {
       const ray = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
 
-      const pointsOfIntersection: number[] = ray.intersect(new Sphere());
-      expect(pointsOfIntersection.length).toEqual(2);
-      expect(pointsOfIntersection[0]).toEqual(-6.0);
-      expect(pointsOfIntersection[1]).toEqual(-4.0);
+      const pointsOfIntersection: Intersections = ray.intersect(new Sphere());
+      expect(pointsOfIntersection.intersections.length).toEqual(2);
+      expect(pointsOfIntersection.intersections[0].t).toEqual(-6.0);
+      expect(pointsOfIntersection.intersections[1].t).toEqual(-4.0);
     });
   });
 });
