@@ -90,15 +90,4 @@ describe("Ray", () => {
       expect(pointsOfIntersection.intersections[1].t).toEqual(-4.0);
     });
   });
-
-  describe("transform", () => {
-    it("should translate a ray", () => {
-      const ray = new Ray(new Point(1,2,3), new Vector(0, 1, 0));
-      const translation = new 
-    });
-
-    it("should scale a ray", () => {
-
-    });
-  });
 });
