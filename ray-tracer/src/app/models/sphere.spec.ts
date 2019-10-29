@@ -1,6 +1,7 @@
 import { Sphere } from "./sphere";
 import { Vector } from "./tuples/vector";
 import { Point } from "./tuples/point";
+import { Matrix } from "./matrices/matrix";
 
 describe("Sphere", () => {
   it("should create a new Sphere", () => {
@@ -43,5 +44,34 @@ describe("Sphere", () => {
 
     const normalizedNormal = normal.normalize();
     expect(normal).toEqual(normalizedNormal);
+  });
+
+  describe("setTransform", () => {
+    it("should compute the normal on a translated sphere", () => {
+      const s = new Sphere();
+      const transformation = s.transformationService.translation(0, 1, 0);
+      s.setTransform(transformation);
+      const normal = s.normalAt(new Point(0, 1.70711, -0.70711));
+      expect(normal.x).toBeCloseTo(0);
+      expect(normal.y).toBeCloseTo(0.70711);
+      expect(normal.z).toBeCloseTo(-0.70711);
+    });
+
+    it("should compute the normal on a transformed sphere", () => {
+      const s = new Sphere();
+      const piOverFive = +(Math.PI / 5).toFixed(5);
+      const sqrtTwoOverTwo = +(Math.SQRT2 / 2).toFixed(3);
+
+      const transformation = s.transformationService
+        .scaling(1, 0.5, 1)
+        .multiply(s.transformationService.rotationZ(piOverFive)) as Matrix;
+
+      s.setTransform(transformation);
+
+      const normal = s.normalAt(new Point(0, sqrtTwoOverTwo, -sqrtTwoOverTwo));
+      expect(normal.x).toBeCloseTo(0);
+      expect(normal.y).toBeCloseTo(0.97014);
+      expect(normal.z).toBeCloseTo(-0.24254);
+    });
   });
 });
