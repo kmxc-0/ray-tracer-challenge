@@ -55,4 +55,22 @@ describe("Vector", () => {
       );
     });
   });
+
+  describe("reflection", () => {
+    it("should reflect a vector approaching at 45 degrees back at 45 degrees with it's y reversed", () => {
+      const v = new Vector(1, -1, 0);
+      const normal = new Vector(0, 1, 0);
+      expect(normal.reflect(v)).toEqual(new Vector(1, 1, 0));
+    });
+
+    it("should reflect off a slanted surface", () => {
+      const root2over2 = +(Math.SQRT2 / 2).toFixed(4);
+      const v = new Vector(0, -1, 0);
+      const normal = new Vector(root2over2, root2over2, 0);
+      const reflection = normal.reflect(v);
+      expect(reflection.x).toBeCloseTo(1);
+      expect(reflection.y).toBeCloseTo(0);
+      expect(reflection.z).toBeCloseTo(0);
+    });
+  });
 });

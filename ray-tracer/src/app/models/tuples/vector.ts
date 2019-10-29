@@ -1,4 +1,6 @@
 import { Tuple } from "./tuple";
+import { Point } from "./point";
+import { Matrix } from "../matrices/matrix";
 
 export class Vector extends Tuple {
   constructor(public x = 0, public y = 0, public z = 0) {
@@ -30,5 +32,11 @@ export class Vector extends Tuple {
       this.z * v.x - this.x * v.z,
       this.x * v.y - this.y * v.x
     );
+  }
+
+  reflect(normalIn: Vector): Vector {
+    const dotProduct = normalIn.dot(this);
+    const normalOut = normalIn.subtract(this.multiply(2).multiply(dotProduct));
+    return new Vector(normalOut.x, normalOut.y, normalOut.z);
   }
 }
