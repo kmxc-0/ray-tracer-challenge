@@ -6,10 +6,10 @@ export class Color extends Tuple {
   readonly blue: number;
   readonly rgb: string;
   constructor(public x = 0, public y = 0, public z = 0) {
-    super(x, y, z);
-    this.red = x;
-    this.green = y;
-    this.blue = z;
+    super(+x.toFixed(4), +y.toFixed(4), +z.toFixed(4));
+    this.red = +x.toFixed(4);
+    this.green = +y.toFixed(4);
+    this.blue = +z.toFixed(4);
     this.rgb = this.toRGB();
   }
 

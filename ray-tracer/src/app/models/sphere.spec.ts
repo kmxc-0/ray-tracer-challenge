@@ -2,6 +2,7 @@ import { Sphere } from "./sphere";
 import { Vector } from "./tuples/vector";
 import { Point } from "./tuples/point";
 import { Matrix } from "./matrices/matrix";
+import { Material } from "./material";
 
 describe("Sphere", () => {
   it("should create a new Sphere", () => {
@@ -72,6 +73,21 @@ describe("Sphere", () => {
       expect(normal.x).toBeCloseTo(0);
       expect(normal.y).toBeCloseTo(0.97014);
       expect(normal.z).toBeCloseTo(-0.24254);
+    });
+  });
+
+  describe("sphere's material", () => {
+    it("should have a default material", () => {
+      const material = new Sphere().material;
+      expect(material).toEqual(new Material());
+    });
+
+    it("can be assigned a new material", () => {
+      const sphere = new Sphere();
+      const material = new Material();
+      material.ambient = 0.1;
+      sphere.material = material;
+      expect(sphere.material).toEqual(material);
     });
   });
 });

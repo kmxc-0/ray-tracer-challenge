@@ -4,10 +4,12 @@ import { Matrix } from "./matrices/matrix";
 import { Vector } from "./tuples/vector";
 import { SphereTransformationService } from "../transformations/sphere-transformation.service";
 import { Tuple } from "./tuples/tuple";
+import { Material } from "./material";
 
 export class Sphere extends Point {
   radii = 1;
   transformation: Matrix = identity4;
+  material = new Material();
   transformationService: SphereTransformationService;
   constructor() {
     super();

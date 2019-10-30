@@ -41,6 +41,13 @@ export class Tuple {
     );
   }
 
+  multiplyByTuple(multiplier: Tuple): Tuple {
+    return new Tuple(
+      this.x * multiplier.x,
+      this.y * multiplier.y,
+      this.z * multiplier.z
+    );
+  }
   multiply(multiplier: number): Tuple {
     const multiply = (x: number) => x * multiplier;
     return new Tuple(
