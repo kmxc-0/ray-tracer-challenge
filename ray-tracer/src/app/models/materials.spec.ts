@@ -1,7 +1,7 @@
 import { Material } from "./material";
 import { Color } from "./tuples/color";
 import { Vector } from "./tuples/vector";
-import { Lights } from "./lights";
+import { Lights } from "./light";
 import { Point } from "./tuples/point";
 
 describe("Material", () => {

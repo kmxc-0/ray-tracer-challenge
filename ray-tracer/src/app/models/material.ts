@@ -1,11 +1,10 @@
 import { Color } from "./tuples/color";
 import { Vector } from "./tuples/vector";
-import { Lights } from "./lights";
+import { Lights } from "./light";
 import { Point } from "./tuples/point";
 import { Tuple } from "./tuples/tuple";
 
 export class Material {
-  private static readonly BLACK = new Color(0, 0, 0);
   constructor(
     public color = new Color(1, 1, 1),
     public ambient = 0.1,
@@ -19,44 +18,35 @@ export class Material {
     normalV: Vector,
     light: Lights,
     position: Point
-  ): Tuple {
-    const effectiveColor = this.color.multiplyByTuple(light.intensity);
-    const lightT = light.position.subtract(position);
-    const lightV = new Vector(lightT.x, lightT.y, lightT.z).normalize();
-    const ambient = effectiveColor.multiply(this.ambient);
+  ): Color {
+    const effectiveColor: Color = this.color.hadamardProduct(light.intensity);
+    const lightV: Vector = Vector.toVector(
+      light.position.subtract(position)
+    ).normalize();
+    const ambient: Color = effectiveColor.timesScalar(this.ambient);
 
-    const lightDotNormal = lightV.dot(normalV);
-    let diffuse, specular;
-
+    const lightDotNormal: number = lightV.dot(normalV);
+    let diffuse: Color;
+    let specular: Color;
     if (lightDotNormal < 0) {
-      diffuse = Material.BLACK;
-      specular = Material.BLACK;
+      diffuse = Color.BLACK;
+      specular = Color.BLACK;
     } else {
-      diffuse = effectiveColor
-        .multiply(this.diffuse as number)
-        .multiply(lightDotNormal);
-      // lightV may need to be negative
-      const nlv = lightV.negate();
-      const invertedLightV = new Vector(nlv.x, nlv.y, nlv.z);
-      const reflectv = invertedLightV.reflect(normalV);
-      const reflectDotEye = reflectv.dot(eyev);
-
-      if (reflectDotEye <= 0) {
-        specular = Material.BLACK;
+      diffuse = effectiveColor.timesScalar(this.diffuse * lightDotNormal);
+      const reflect: Vector = Vector.toVector(lightV.negate()).reflect(normalV);
+      const reflectDotEye = +reflect.dot(eyev).toFixed(4);
+      console.log(reflectDotEye);
+      if (reflectDotEye < 0) {
+        specular = Color.BLACK;
       } else {
-        specular = light.intensity
-          .multiply(this.specular)
-          .multiply(reflectDotEye ** this.shininess);
+        specular = light.intensity.timesScalar(
+          this.specular * reflectDotEye ** this.shininess
+        );
       }
     }
-    const intermediary = ambient.add(diffuse);
-    const intermediaryV = new Vector(
-      intermediary.x,
-      intermediary.y,
-      intermediary.z
+    console.log(
+      `ambient: ${ambient.red}, diffuse: ${diffuse.red}, specular: ${specular.red}`
     );
-
-    const { x, y, z } = intermediaryV.add(specular);
-    return new Color(+x.toFixed(4), +y.toFixed(4), +z.toFixed(4));
+    return ambient.colorMerge(diffuse).colorMerge(specular);
   }
 }

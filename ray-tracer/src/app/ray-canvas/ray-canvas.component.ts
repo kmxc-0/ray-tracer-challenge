@@ -11,6 +11,8 @@ import { Color } from "../models/tuples/color";
 import { Sphere } from "../models/sphere";
 import { Ray } from "../models/ray/ray";
 import { Vector } from "../models/tuples/vector";
+import { Lights } from "../models/light";
+import { Material } from "../models/material";
 
 @Component({
   selector: "app-ray-canvas",
@@ -37,8 +39,9 @@ export class RayCanvasComponent implements AfterViewInit {
     const wallSize = 7;
     const pixelSize = wallSize / this.height;
     const halfOfWorldSize = wallSize / 2;
-    const color = new Color(255, 99, 71);
     const shape = new Sphere();
+    shape.material.color = new Color(1, 0.2, 1);
+    const light = new Lights(new Color(1, 1, 1), new Point(-10, 10, -10));
 
     // Could use a symbol iterator here instead by enhancing the canvas model.
     for (let i = 0; i < this.height; i++) {
@@ -48,14 +51,21 @@ export class RayCanvasComponent implements AfterViewInit {
         const position = new Point(worldX, worldY, wallZ);
 
         const { x, y, z } = position.subtract(rayOrigin);
-        const rayPositionV = new Vector(x, y, z);
+        const rayPositionV = new Vector(x, y, z).normalize();
 
         const ray = new Ray(rayOrigin, rayPositionV);
         const xs = ray.intersect(shape);
 
         if (xs.hit()) {
+          const hit = xs.hit();
+          const point = ray.position(hit.t);
+          const normal = hit.object.normalAt(point);
+          const eye = Vector.toVector(ray.direction.negate());
+          const color = hit.object.material.lighting(eye, normal, light, point);
+          const [red, green, blue] = color.toRGBComponents();
+          console.log(color.red);
           const imageData = new ImageData(
-            Uint8ClampedArray.from([color.red, color.blue, color.green, 255]),
+            Uint8ClampedArray.from([+red, +green, +blue, 255]),
             1,
             1
           );

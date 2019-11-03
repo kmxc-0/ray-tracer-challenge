@@ -1,8 +1,8 @@
-import { Lights } from "./lights";
+import { Lights } from "./light";
 import { Color } from "./tuples/color";
 import { Point } from "./tuples/point";
 
-describe("Lights", () => {
+describe("Light", () => {
   it("should create a point light with position and intensity", () => {
     const intensity = new Color(1, 1, 1);
     const position = new Point(0, 0, 0);
